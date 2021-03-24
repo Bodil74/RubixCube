@@ -129,7 +129,7 @@ def main():
 					   pygame.K_6 : (lambda x : rotate((0, 3, 6, 45, 48, 51, 15, 12, 9, 42, 39, 36), 27)),
 					   pygame.K_7 : (lambda x : rotate((2, 1, 0, 27, 28, 29, 9, 10, 11, 20, 19, 18), 36)),
 					   pygame.K_8 : (lambda x : rotate((5, 4, 3, 30, 31, 32, 12, 13, 14, 27, 22, 21))),
-					   pygame.K_9 : (lambda x : rotate((8, 7, 6, 33, 34, 35, 15, 16, 17, 26, 28, 24), 45))}
+					   pygame.K_9 : (lambda x : rotate((8, 7, 6, 33, 34, 35, 15, 16, 17, 26, 25, 24), 45))}
 
 	while running:
 
