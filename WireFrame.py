@@ -1,5 +1,4 @@
 import math
-import shapely
 import numpy as np
 
 class WireFrame:
@@ -7,11 +6,10 @@ class WireFrame:
 		self.nodes = np.zeros((0, 4))
 		self.edges = []
 		self.faces = []
-		self.mask = None
+		self.colors = []
 
 	def addColors(self, colors):
-		for i in range(len(colors)):
-			self.faces[i].append(colors[i])
+		self.colors += colors
 
 	def addNodes(self, node_array):
 		ones_column = np.ones((len(node_array), 1))
@@ -23,9 +21,6 @@ class WireFrame:
 
 	def addFaces(self, faces):
 		self.faces += faces
-
-	def makeMask(self):
-		pass
 
 	def transform(self, matrix):
 		self.nodes = np.dot(self.nodes, matrix)
