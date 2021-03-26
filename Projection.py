@@ -22,11 +22,11 @@ def sort_nodes(li, nodes_z):
 	return x
 
 class ProjectionViewer:
-	def __init__(self, width = 300, height = 300):
+	def __init__(self, width = 300, height = 300, title = '3D-Viewer'):
 		self.width = width
 		self.height = height
 		self.screen = pygame.display.set_mode((width, height))
-		pygame.display.set_caption("3D-Viewer")
+		pygame.display.set_caption(title)
 		self.background = (0, 0, 0)
 		self.wireframes = {}
 		self.displayNodes = False
@@ -39,7 +39,7 @@ class ProjectionViewer:
 
 		self.current_wireframe = None
 
-		self.font = pygame.font.SysFont("Arial", 18)
+		self.font = pygame.font.SysFont("arial", 18)
 		self.start = time.time()
 		self.current = self.start
 		self.counter = 0
