@@ -5,6 +5,35 @@ import random
 import pygame
 import time
 
+'''
+TODO:
+
+	add a solve button to main menu
+		this will bring the user to a page that lets them input colors of a cude and it will return the steps required to solve it
+
+	center the rubix cube in the main menu
+
+	make the solver function :(
+
+	maybe add different sizes of cubes
+		shouldn't have to change to much other than the Rubix.rotate function to not expect to move 3 spaces
+		everything else should just fall in place :))))))))))))
+		maybe no solver for these cubes
+
+	music? connect to user spotify if i want to be fancy
+
+	general clean up aka the big boy lists of Rubix.moves and Rubix.wireframe.addColors
+
+	make a competive mode
+		a diiferent button on the main menu, timer starts when the user lets go of the spacebar and stops when the user hits the spacebar
+		just like a real rubix cube speedrun
+		leaderboards? online? server? website!?
+
+	add rotation with clicking and dragging of the mouse
+
+	make use of numpad and change controls to make it more intuitive
+'''
+
 pygame.init()
 
 
@@ -46,11 +75,10 @@ class Rubix:
 			self.rotate(call[0], call[1], call[2])
 			self.previous_moves = self.previous_moves[:-2]
 
-	def scramble(self):
-		for i in range(random.randint(100, 500)):
+	def scramble(self, num):
+		for i in range(num):
 			r = random.randint(0, len(self.moves) - 1)
 			self.rotate(self.moves[r][0], self.moves[r][1], self.moves[r][2])
-			draw()
 
 	def reset(self):
 		for i in range(len(self.previous_moves[::])):
@@ -139,6 +167,55 @@ class MenuButtons:
 
 			pygame.display.flip()
 
+	def main(self):
+
+		r = Rubix()
+		r.make_rubix()
+		r.scramble(26)
+
+		pv.addWireFrame('rubix', r.wireframe)
+		pv.current_wireframe = pv.wireframes['rubix']
+		pv.rotateAll('X', 0.78)
+		pv.rotateAll('Y', 0.60)
+		pv.rotateAll('Z', 0.51)
+		pv.translateAll([-15, 0, 0])
+		pv.translateAll([0, -10, 0])
+
+		running = True
+
+		main_font = pygame.font.SysFont('arial', 40)
+
+		start_text = main_font.render('Start', True, (255, 255, 255))
+		start_rect = pygame.Rect(250, 470, 75, 45)
+
+		start_time = time.time()
+		wait_time = random.randint(1, 4)
+
+		while running:
+			if time.time() - start_time > wait_time:
+				r.undo()
+				start_time = time.time()
+				wait_time = random.randint(1, 4)
+
+			pv.rotateAll('Y', 0.01)
+
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					running = False
+					pygame.quit()
+					exit()
+				
+				elif event.type == pygame.MOUSEBUTTONUP:
+					if pygame.Rect.collidepoint(start_rect, pygame.mouse.get_pos()):
+						running = False
+						main()
+						break
+				
+			pv.display()
+			pygame.draw.rect(pv.screen, (255, 255, 255), start_rect, 1)
+			pv.screen.blit(start_text, (start_rect[0], start_rect[1]))
+
+			pygame.display.flip()
 
 class Timer():
 	def __init__(self):
@@ -168,6 +245,12 @@ def draw():
 
 def main():
 
+	print('here')
+
+	rubix = Rubix()
+	rubix.make_rubix()
+	pv.addWireFrame('rubix', rubix.wireframe)
+
 	pv.current_wireframe = pv.wireframes['rubix']
 
 	pv.rotateAll('X', 0.78)
@@ -196,7 +279,7 @@ def main():
 					   pygame.K_8 : (lambda x : rubix.rotate(rubix.moves[7][0], rubix.moves[7][1], rubix.moves[7][2])),
 					   pygame.K_9 : (lambda x : rubix.rotate(rubix.moves[8][0], rubix.moves[8][1], rubix.moves[8][2])),
 					   pygame.K_BACKSPACE : (lambda x : rubix.undo()),
-					   pygame.K_u : (lambda x : rubix.scramble()),
+					   pygame.K_TAB : (lambda x : rubix.scramble(random.randint(100, 500))),
 					   pygame.K_h : (lambda x : menu.help()),
 					   pygame.K_SPACE : (lambda x : timer.activate_deactivate()),
 					   pygame.K_r : (lambda x : rubix.reset())}
@@ -220,7 +303,9 @@ def main():
 					menu.help()
 
 				elif pygame.Rect.collidepoint(menu.scramble_rect, pygame.mouse.get_pos()):
-					rubix.scramble()
+					for i in range(random.randint(100, 500)):
+						rubix.scramble(1)
+						draw()
 
 				elif pygame.Rect.collidepoint(menu.undo_rect, pygame.mouse.get_pos()):
 					rubix.undo()
@@ -231,8 +316,7 @@ def main():
 
 menu = MenuButtons()
 timer = Timer()
-rubix = Rubix()
-rubix.make_rubix()
+
 pv = ProjectionViewer(600, 600, 'Rubix\'s Cube')
-pv.addWireFrame('rubix', rubix.wireframe)
-main()
+
+menu.main()
